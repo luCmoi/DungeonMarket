@@ -5,14 +5,14 @@ using System.Collections;
 
 public class ButtonConstruct : MonoBehaviour {
     public GameObject building;
-    public Text name;
+    public Text nameConstruct;
     public Text price;
     private float sizeName = 0.02f;
     private float sizePrice = 0.02f;
 
 	// Use this for initialization
 	void Start () {
-        name.fontSize = CalculFont(sizeName);
+        nameConstruct.fontSize = CalculFont(sizeName);
         price.fontSize = CalculFont(sizePrice);
 	}
 	
@@ -25,7 +25,7 @@ public class ButtonConstruct : MonoBehaviour {
     {
                 GameUtilities.Instance.ActiveConstructing();
                 GameUtilities.Instance.building = building;
-        GameUtilities.Instance.DesactivateMenu();
+                UIController.Instance.DesactivateMenu(0);
         }
 
     int CalculFont(float fontSize)

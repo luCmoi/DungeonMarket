@@ -14,26 +14,30 @@ public class CameraControl : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update () {
-        if (Input.GetMouseButtonDown(0))
+    void Update()
+    {
+        if (UIController.Instance.interactible)
         {
-            dragOrigin = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0);
-            dragOrigin = GetComponent<Camera>().ScreenToWorldPoint(dragOrigin);
-        }
+            if (Input.GetMouseButtonDown(0))
+            {
+                dragOrigin = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0);
+                dragOrigin = GetComponent<Camera>().ScreenToWorldPoint(dragOrigin);
+            }
 
-        if (Input.GetMouseButton(0))
-        {
-            Vector3 currentPos =new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0);
-            currentPos = GetComponent<Camera>().ScreenToWorldPoint(currentPos);
-            Vector3 movePos = dragOrigin - currentPos;
-            transform.position = transform.position + movePos;
+            if (Input.GetMouseButton(0))
+            {
+                Vector3 currentPos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0);
+                currentPos = GetComponent<Camera>().ScreenToWorldPoint(currentPos);
+                Vector3 movePos = dragOrigin - currentPos;
+                transform.position = transform.position + movePos;
+            }
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            if (scroll != 0.0f)
+            {
+                targetOrtho -= scroll * zoomSpeed;
+                targetOrtho = Mathf.Clamp(targetOrtho, minOrtho, maxOrtho);
+            }
+            GetComponent<Camera>().orthographicSize = Mathf.MoveTowards(GetComponent<Camera>().orthographicSize, targetOrtho, smoothSpeed * Time.deltaTime);
         }
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
-        if (scroll != 0.0f)
-        {
-            targetOrtho -= scroll * zoomSpeed;
-            targetOrtho = Mathf.Clamp(targetOrtho, minOrtho, maxOrtho);
-        }
-        GetComponent<Camera>().orthographicSize = Mathf.MoveTowards(GetComponent<Camera>().orthographicSize, targetOrtho, smoothSpeed * Time.deltaTime);
     }
 }

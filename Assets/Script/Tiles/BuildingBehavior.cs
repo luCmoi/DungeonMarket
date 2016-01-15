@@ -19,6 +19,7 @@ public class BuildingBehavior : MonoBehaviour {
 
     public void Activate()
     {
+        GameUtilities.Instance.DesactiveConstructing();
         GameObject newBuilding = Instantiate(GameUtilities.Instance.building, transform.position,Quaternion.identity) as GameObject;
         newBuilding.transform.parent = transform;
         GameObject[][] newTiles = new GameObject[newBuilding.GetComponent<Building>().height][];
@@ -32,7 +33,7 @@ public class BuildingBehavior : MonoBehaviour {
     {
         if (GetComponent<TilesBehavior>().constructible)
         {
-            GetComponent<TilesBehavior>().setConstructible(false);
+            GetComponent<TilesBehavior>().setConstructible(false, newBuilding.GetComponent<Building>());
             building = newBuilding;
             tiles = newTiles;
             tiles[tiles.Length - height][tiles[0].Length - width] = gameObject;
@@ -59,19 +60,19 @@ public class BuildingBehavior : MonoBehaviour {
                 building.GetComponent<Building>().setEntrance(null);
                 if (GetComponent<TilesBehavior>().left != null && GetComponent<TilesBehavior>().left.GetComponent<RoadBehavior>().distanceToEntrance != -1)
                 {
-                    building.GetComponent<Building>().setEntrance(gameObject);
+                    building.GetComponent<Building>().setEntrance(GetComponent<TilesBehavior>().left);
                 }
                 else if (GetComponent<TilesBehavior>().top != null && GetComponent<TilesBehavior>().top.GetComponent<RoadBehavior>().distanceToEntrance != -1)
                 {
-                    building.GetComponent<Building>().setEntrance(gameObject);
+                    building.GetComponent<Building>().setEntrance(GetComponent<TilesBehavior>().top);
                 }
                 else if (GetComponent<TilesBehavior>().right != null && GetComponent<TilesBehavior>().right.GetComponent<RoadBehavior>().distanceToEntrance != -1)
                 {
-                    building.GetComponent<Building>().setEntrance(gameObject);
+                    building.GetComponent<Building>().setEntrance(GetComponent<TilesBehavior>().right);
                 }
                 else if (GetComponent<TilesBehavior>().down != null && GetComponent<TilesBehavior>().down.GetComponent<RoadBehavior>().distanceToEntrance != -1)
                 {
-                    building.GetComponent<Building>().setEntrance(gameObject);
+                    building.GetComponent<Building>().setEntrance(GetComponent<TilesBehavior>().down);
                 }
             }
         }

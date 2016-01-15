@@ -15,9 +15,9 @@ public class ButtonMenu : MonoBehaviour {
 
     public void OnClick()
     {
-        if (GameUtilities.Instance.interactible)
+        if (UIController.Instance.interactible)
         {
-            GameUtilities.Instance.ActivateMenu();
+            GameUtilities.Instance.ActivateConstructingMenu();
         }
     }
 }

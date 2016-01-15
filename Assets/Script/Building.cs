@@ -7,7 +7,7 @@ public class Building : MonoBehaviour {
     public int entranceX;
     public int entranceY;
     public GameObject alerteSignal;
-    private GameObject entrance;
+    public GameObject entrance;
     private bool activated;
 
 	// Use this for initialization
@@ -38,6 +38,18 @@ public class Building : MonoBehaviour {
             activated = false;
             entrance = null;
             alerteSignal.SetActive(true);
+        }
+    }
+
+    public void OnMouseDown()
+    {
+        if (GetComponent<QuestGiver>()!= null)
+        {
+            GetComponent<QuestGiver>().OnMouseDown();
+        }
+        if (GetComponent<Dungeon>()!= null)
+        {
+            GetComponent<Dungeon>().OnMouseDown();
         }
     }
 }

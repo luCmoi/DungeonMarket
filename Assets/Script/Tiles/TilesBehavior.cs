@@ -5,12 +5,15 @@ public class TilesBehavior : MonoBehaviour {
     public GameObject greenCircle;
     private GameObject circle;
     public bool constructible;
+    public int posX;
+    public int posY;
+    public Building building;
     public GameObject right;
     public GameObject down;
     public GameObject top;
     public GameObject left;
     public bool gameEntrance;
-
+    
 	void Start () {
         if (constructible)
         {
@@ -26,7 +29,6 @@ public class TilesBehavior : MonoBehaviour {
             down.GetComponent<TilesBehavior>().setTop(gameObject);
         }
     }
-	
     public void setLeft(GameObject leftNew)
     {
         left = leftNew;
@@ -39,10 +41,11 @@ public class TilesBehavior : MonoBehaviour {
     void Update () {
 	
 	}
-    public void setConstructible (bool constructibleNew)
+    public void setConstructible (bool constructibleNew, Building buildingNew)
     {
         if (constructible != constructibleNew) {
             constructible = constructibleNew;
+            building = buildingNew;
             if (!constructible)
             {
                 Destroy(circle);
@@ -56,30 +59,38 @@ public class TilesBehavior : MonoBehaviour {
     }
     void OnMouseDown()
     {
-        if (GameUtilities.Instance.roadCreating)
+        if (UIController.Instance.interactible)
         {
-            if (!GetComponent<RoadBehavior>().activated)
+            if (GameUtilities.Instance.roadCreating)
             {
-                if (constructible)
+                if (!GetComponent<RoadBehavior>().activated)
                 {
-                    GetComponent<RoadBehavior>().Activate();
+                    if (constructible)
+                    {
+                        GetComponent<RoadBehavior>().Activate();
+                    }
+                }
+                else
+                {
+                    if (!gameEntrance)
+                    {
+                        GetComponent<RoadBehavior>().Desactivate();
+                    }
                 }
             }
-            else
+            else if (GameUtilities.Instance.constructing)
             {
-                if (!gameEntrance)
+                if (isConstructibleRight(GameUtilities.Instance.building.GetComponent<Building>().width))
                 {
-                    GetComponent<RoadBehavior>().Desactivate();
+                    if (isConstructibleTop(GameUtilities.Instance.building.GetComponent<Building>().height))
+                    {
+                        GetComponent<BuildingBehavior>().Activate();
+                    }
                 }
             }
-        }else if (GameUtilities.Instance.constructing)
-        {
-            if (isConstructibleRight(GameUtilities.Instance.building.GetComponent<Building>().width))
+            else if (!constructible && building != null)
             {
-                if (isConstructibleTop(GameUtilities.Instance.building.GetComponent<Building>().height))
-                {
-                    GetComponent<BuildingBehavior>().Activate();
-                }
+                building.OnMouseDown();
             }
         }
     }

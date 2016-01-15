@@ -57,7 +57,7 @@ public class RoadBehavior : MonoBehaviour {
         {
             DesactivateAdjacent();
             DesactivateLink();
-            GetComponent<TilesBehavior>().setConstructible(true);
+            GetComponent<TilesBehavior>().setConstructible(true,null);
             Destroy(road);
         }
     }
@@ -119,7 +119,7 @@ public class RoadBehavior : MonoBehaviour {
 
     void CheckLinkedToEntrance()
     {
-        if (!GetComponent<TilesBehavior>().gameEntrance)
+        if (GetComponent<TilesBehavior>().GetComponent<Entrance>() == null)
         {
             int oldDistance = distanceToEntrance;
             distanceToEntrance = 999;
@@ -146,7 +146,7 @@ public class RoadBehavior : MonoBehaviour {
             }
             if (adjacent[3])
             {
-                if (GetComponent<TilesBehavior>().down.GetComponent<TilesBehavior>().gameEntrance || GetComponent<TilesBehavior>().down.GetComponent<RoadBehavior>().distanceToEntrance != -1)
+                if (GetComponent<TilesBehavior>().down.GetComponent<TilesBehavior>().GetComponent<Entrance>()!=null || GetComponent<TilesBehavior>().down.GetComponent<RoadBehavior>().distanceToEntrance != -1)
                 {
                     distanceToEntrance = Mathf.Min(distanceToEntrance, GetComponent<TilesBehavior>().down.GetComponent<RoadBehavior>().distanceToEntrance + 1);
                 }
@@ -332,7 +332,7 @@ public class RoadBehavior : MonoBehaviour {
         {
             Destroy(road);
         }
-        GetComponent<TilesBehavior>().setConstructible(false);
+        GetComponent<TilesBehavior>().setConstructible(false,null);
             if (adjacent[0])
             {
                 if (adjacent[1])
