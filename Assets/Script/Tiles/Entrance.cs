@@ -2,12 +2,8 @@
 using System.Collections;
 
 public class Entrance : MonoBehaviour {
-    public bool entranceOpen;
-    public int visitorMax = 1;
-    public int visitor = 0;
-    public GameObject pnj;
     public TilesBehavior initTile;
-    public int tick;
+
     // Use this for initialization
     void Start () {
 	
@@ -17,22 +13,12 @@ public class Entrance : MonoBehaviour {
 	void Update () {
 	
 	}
-    void FixedUpdate()
+    public void MakeEnter(PnjBehavior pnj)
     {
-        if (GameUtilities.Instance.tick != tick)
-        {
-            tick = GameUtilities.Instance.tick;
-            if (entranceOpen)
-            {
-                if (visitor < visitorMax)
-                {
-                    PnjBehavior pnjNew = GameList.Instance.TakeNoob();
-                    pnjNew.transform.parent = transform;
-                    visitor++;
-                    pnjNew.GetComponent<PnjBehavior>().initTile = initTile;
-                    GameList.Instance.AddPnj(pnjNew.GetComponent<PnjBehavior>());
-                }
-            }
-        }
+        pnj.transform.parent = transform;
+        pnj.GetComponent<PnjBehavior>().initTile = initTile;
+        pnj.GetComponent<PnjBehavior>().container = GetComponent<TilesBehavior>();
+        GameList.Instance.AddPnj(pnj.GetComponent<PnjBehavior>());
+        pnj.Activate();
     }
 }

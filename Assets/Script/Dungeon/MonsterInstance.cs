@@ -16,6 +16,12 @@ public class MonsterInstance : IComparable<MonsterInstance>
         GameList.Instance.AddMonster(this);
         dungeon = dungeonNew;
     }
+
+    public MonsterInstance(Monster monsterNew)
+    {
+                monster = monsterNew;
+        life = monster.life;
+    }
 	// Use this for initialization
 	void Start () {
 	
@@ -47,6 +53,7 @@ public class MonsterInstance : IComparable<MonsterInstance>
         if (life <= 0)
         {
             timeBeforeRespawn = monster.respawnTime;
+            monster.killed++;
         }
     }
 }

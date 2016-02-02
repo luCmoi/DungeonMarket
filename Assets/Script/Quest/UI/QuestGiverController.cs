@@ -8,7 +8,9 @@ public class QuestGiverController : MonoBehaviour {
     public Text[] buttonText;
     public float buttonTextSize = 0.02f;
     public ButtonQuest[] buttons = new ButtonQuest[4];
+    public Text nameQuestGiver;
     private QuestGiver questGiver;
+    public ProgressBar bar;
 	// Use this for initialization
 	void Start () {
         if (Instance != null)
@@ -18,9 +20,6 @@ public class QuestGiverController : MonoBehaviour {
         else
         {
             Instance = this;
-        }
-        foreach (Text button in buttonText) {
-            button.fontSize = CalculFont(buttonTextSize);
         }
     }
 	
@@ -32,25 +31,39 @@ public class QuestGiverController : MonoBehaviour {
     public void SetQuestGiver(QuestGiver questGiverNew)
     {
         questGiver = questGiverNew;
+        nameQuestGiver.text = questGiver.GetComponent<Building>().nameBuilding + " - Level " + questGiver.GetComponent<Building>().level;
         foreach (GameObject choice in choices)
         {
             choice.SetActive(false);
         }
         foreach (ButtonQuest button in buttons)
         {
-            button.SetQuestList(questGiverNew.quests[button.id], questGiverNew.questSelected[button.id]);
+            if (button.id <= questGiver.unlocked)
+            {
+                button.SetQuestList(questGiverNew.quests[button.id], questGiverNew.questSelected[button.id]);
+            }else
+            {
+                button.SetQuestList(null, null);
+            }
         }
-    }
-
-    int CalculFont(float fontSize)
-    {
-        return (int)(Screen.width * fontSize);
+        bar.SetQuestGiver(questGiver.GetComponent<Building>());
     }
 
     public void SelectQuest(int row,int num)
     {
-        questGiver.AddQuest(questGiver.quests[row][num], row);
-        UIController.Instance.DesactivateMenu(1);
+        if (questGiver.questSelected[row] != null)
+        {
+            if (questGiver.questSelected[row].mastered)
+            {
+                questGiver.Change(row);
+                SetQuestGiver(questGiver);
+            }
+        }
+        else
+        {
+            questGiver.AddQuest(questGiver.quests[row][num], row);
+            UIController.Instance.DesactivateMenu(1);
+        }
     }
 
     public void Desactivate()

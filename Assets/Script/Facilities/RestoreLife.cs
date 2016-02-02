@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 using System;
 
 public class RestoreLife : MonoBehaviour, IComparable<RestoreLife>
@@ -14,7 +13,6 @@ public class RestoreLife : MonoBehaviour, IComparable<RestoreLife>
     // Use this for initialization
     void Start()
     {
-        GameList.Instance.Facilities.Add(GetComponent<Facility>());
         GameList.Instance.RestoreLifes.Add(this);
     }
 

@@ -11,6 +11,14 @@ public class Quest : MonoBehaviour, IComparable<Quest> {
     public int power;
     public Monster creature;
     public int money;
+
+    public bool mastered;
+    public int executeMaster;
+    public int executed;
+    public LevelUp master;
+
+    public bool locked = true;
+
     public GameObject questGiver;
 
     //Type 0 = kill number of creature;
@@ -24,6 +32,17 @@ public class Quest : MonoBehaviour, IComparable<Quest> {
 	void Update () {
 	
 	}
+
+    public void Executed()
+    {
+            executed++;
+            if (!mastered && executed >= executeMaster)
+            {
+                mastered = true;
+                master.Activate();
+                GameUtilities.Instance.band.Activate(image, nameQuest + " - Mastered", master.Activate());
+            }
+    }
 
     public int CompareTo(Quest other)
     {

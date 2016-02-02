@@ -51,17 +51,11 @@
     <Reference Include="UnityEngine">
       <HintPath>Library\UnityAssemblies\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Advertisements">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Advertisements.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Analytics">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Analytics.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
@@ -91,23 +85,44 @@
     <Compile Include="Assets\Script\Facilities\RestoreLife.cs" />
     <Compile Include="Assets\Script\GameList.cs" />
     <Compile Include="Assets\Script\GameUtilities.cs" />
+    <Compile Include="Assets\Script\LevelUp.cs" />
+    <Compile Include="Assets\Script\Pnj\Class.cs" />
     <Compile Include="Assets\Script\Pnj\PnjBehavior.cs" />
     <Compile Include="Assets\Script\Pnj\PnjDungeon.cs" />
+    <Compile Include="Assets\Script\Pnj\PnjPopupInfo.cs" />
     <Compile Include="Assets\Script\Pnj\QuestLaunched.cs" />
+    <Compile Include="Assets\Script\Pnj\UI\ClassController.cs" />
+    <Compile Include="Assets\Script\Pnj\UI\PersonnageController.cs" />
+    <Compile Include="Assets\Script\Pnj\UI\PnjClickMenuController.cs" />
+    <Compile Include="Assets\Script\Pnj\UI\QuestController.cs" />
+    <Compile Include="Assets\Script\PowerUtilities.cs" />
+    <Compile Include="Assets\Script\ProgressBar.cs" />
     <Compile Include="Assets\Script\Quest\Quest.cs" />
     <Compile Include="Assets\Script\Quest\QuestGiver.cs" />
     <Compile Include="Assets\Script\Quest\UI\ButtonQuest.cs" />
     <Compile Include="Assets\Script\Quest\UI\ButtonSelect.cs" />
     <Compile Include="Assets\Script\Quest\UI\QuestGiverController.cs" />
+    <Compile Include="Assets\Script\Text\TextController.cs" />
+    <Compile Include="Assets\Script\Text\TextUtilities.cs" />
+    <Compile Include="Assets\Script\Tiles\BigTileBehavior.cs" />
     <Compile Include="Assets\Script\Tiles\BuildingBehavior.cs" />
     <Compile Include="Assets\Script\Tiles\Entrance.cs" />
     <Compile Include="Assets\Script\Tiles\RoadBehavior.cs" />
     <Compile Include="Assets\Script\Tiles\TilesBehavior.cs" />
+    <Compile Include="Assets\Script\Tiles\UI\ButtonInvade.cs" />
+    <Compile Include="Assets\Script\Tiles\UI\FightController.cs" />
+    <Compile Include="Assets\Script\Tiles\UI\UnlockBigTileController.cs" />
+    <Compile Include="Assets\Script\Towns\ButtonAdvertise.cs" />
+    <Compile Include="Assets\Script\Towns\TownInfo.cs" />
+    <Compile Include="Assets\Script\Towns\TownsController.cs" />
+    <Compile Include="Assets\Script\UI\Band.cs" />
     <Compile Include="Assets\Script\UI\ButtonConstruct.cs" />
     <Compile Include="Assets\Script\UI\ButtonMenu.cs" />
     <Compile Include="Assets\Script\UI\ButtonPage.cs" />
+    <Compile Include="Assets\Script\UI\ButtonPnjs.cs" />
     <Compile Include="Assets\Script\UI\ButtonRoadCreat.cs" />
     <Compile Include="Assets\Script\UI\PageControl.cs" />
+    <Compile Include="Assets\Script\UI\SuccessMenu.cs" />
     <Compile Include="Assets\Script\UI\UIController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />

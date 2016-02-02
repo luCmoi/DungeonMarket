@@ -2,7 +2,8 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class CaseController : MonoBehaviour {
+public class CaseController : MonoBehaviour
+{
     public Button button;
     public Image image;
     private Monster monster;
@@ -10,15 +11,17 @@ public class CaseController : MonoBehaviour {
     public GameObject pnjImage;
     private int tick;
     public int id;
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    // Use this for initialization
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 
     void FixedUpdate()
     {
@@ -40,11 +43,12 @@ public class CaseController : MonoBehaviour {
                             pnjImage.GetComponent<RectTransform>().anchorMin = new Vector2(dungeon.visitor[id].quart * 0.25f, 0);
                             pnjImage.GetComponent<RectTransform>().anchorMax = new Vector2(dungeon.visitor[id].quart * 0.25f + 0.25f, 0.25f);
                         }
-                    }else if (dungeon.visitor[id] != null)
+                    }
+                    else if (dungeon.visitor[id] != null)
                     {
                         pnjImage.SetActive(true);
                         pnjImage.GetComponent<RectTransform>().anchorMin = new Vector2(dungeon.visitor[id].quart * 0.25f, 0);
-                        pnjImage.GetComponent<RectTransform>().anchorMax = new Vector2(dungeon.visitor[id].quart * 0.25f +0.25f, 0.25f);
+                        pnjImage.GetComponent<RectTransform>().anchorMax = new Vector2(dungeon.visitor[id].quart * 0.25f + 0.25f, 0.25f);
                         pnjImage.GetComponent<Image>().sprite = dungeon.visitor[id].behavior.GetComponent<SpriteRenderer>().sprite;
                     }
                 }
@@ -57,7 +61,6 @@ public class CaseController : MonoBehaviour {
         if (monsterNew == null)
         {
             monster = null;
-            button.gameObject.SetActive(true);
             image.gameObject.SetActive(false);
         }
         else
@@ -77,10 +80,36 @@ public class CaseController : MonoBehaviour {
         if (dungeon.monsters[id] != null)
         {
             SetMonster(dungeon.monsters[id].monster);
-        }else
+        }
+        else
         {
+            if (id == 0)
+            {
+                ActivateButton();
+            }
+            else if (dungeon.monsters[id-1] != null)
+            {
+                ActivateButton();
+            }
+            else
+            {
+                DesactivateButton();
+            }
             SetMonster(null);
         }
         GetComponent<Image>().sprite = dungeon.background[id];
+    }
+
+    public void ActivateButton()
+    {
+        button.interactable = true;
+        button.GetComponent<Image>().color = Color.white;
+
+
+    }
+    public void DesactivateButton()
+    {
+        button.interactable = false;
+        button.GetComponent<Image>().color = Color.grey;
     }
 }

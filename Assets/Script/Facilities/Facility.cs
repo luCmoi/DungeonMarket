@@ -5,7 +5,10 @@ using System;
 public class Facility : MonoBehaviour, IComparable<Facility>
 {
     public int price;
-
+    void Start()
+    {
+        GameList.Instance.Facilities.Add(this);
+    }
     public int CompareTo(Facility other)
     {
         if (price > other.price) return 1;
@@ -15,8 +18,9 @@ public class Facility : MonoBehaviour, IComparable<Facility>
 
     public void Use(PnjBehavior pnj)
     {
-        pnj.money = pnj.money - price;
+        pnj.gains[0] = pnj.gains[0] - price;
         pnj.shop = pnj.shop - price;
-        GameUtilities.Instance.ChangeMoney(price);
+        pnj.gains[2] = pnj.gains[2] + price;
+        GetComponent<Building>().gains[1] = GetComponent<Building>().gains[1] + price;
     }
 }

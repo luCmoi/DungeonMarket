@@ -5,26 +5,19 @@ using System.Collections;
 
 public class ButtonQuest : MonoBehaviour {
     public GameObject[] choices = new GameObject[3];
-    public Text[] nameButton = new Text[3];
     public float nameSize = 0.02f;
     public Text[] text = new Text[3];
     public float textSize = 0.02f;
     public Image[] image = new Image[3];
     public int id;
     public Text[] buttons = new Text[3];
+    public Text[] titleQuest = new Text[3];
     public Quest[] list;
+    public Text[] info = new Text[3];
     public Quest selected;
 
     // Use this for initialization
     void Start () {
-        foreach (Text nam in nameButton)
-        {
-            nam.fontSize = CalculFont(nameSize);
-        }
-        foreach (Text tex in text)
-        {
-            tex.fontSize = CalculFont(textSize);
-        }
     }
 	
 	// Update is called once per frame
@@ -38,10 +31,22 @@ public class ButtonQuest : MonoBehaviour {
             choices[0].SetActive(false);
             choices[2].SetActive(false);
             choices[1].SetActive(true);
-            nameButton[1].text = selected.nameQuest;
             text[1].text = selected.text;
             image[1].sprite = selected.image;
-            buttons[1].text = "Selected";
+            titleQuest[1].text = selected.nameQuest;
+            info[1].text = "Objectif : "+selected.number + "\nMoney : " + selected.money + "\nDifficulty : " + selected.power + "\nExecuted : "+selected.executed;
+            if (selected.mastered)
+            {
+                info[1].text += "Mastered";
+            }
+            if (!selected.mastered)
+            {
+                buttons[1].text = "Selected";
+            }
+            else
+            {
+                buttons[1].text = "Change";
+            }
         }
         else
         {
@@ -50,11 +55,26 @@ public class ButtonQuest : MonoBehaviour {
                 if (list[i] != null)
                 {
                     choices[i].SetActive(true);
-                    nameButton[i].text = list[i].nameQuest;
                     text[i].text = list[i].text;
                     image[i].sprite = list[i].image;
                     buttons[i].text = "Select";
                     buttons[i].transform.parent.GetComponent<ButtonSelect>().questRow = id;
+                    titleQuest[i].text = list[i].nameQuest;
+                    info[i].text = "Objectif : " + list[i].number + "\nMoney : " + list[i].money + "\nDifficulty : " + list[i].power+ "\nExecuted : " + list[i].executed;
+                    if (list[i].mastered)
+                    {
+                        info[1].text += "\nMastered";
+                    }
+                    if (list[i].locked)
+                    {
+                        buttons[i].gameObject.transform.parent.GetComponent<UnityEngine.UI.Button>().interactable = false;
+                        buttons[i].gameObject.transform.parent.GetComponent<Image>().color = Color.grey;
+                    }
+                    else
+                    {
+                        buttons[i].gameObject.transform.parent.GetComponent<UnityEngine.UI.Button>().interactable = true;
+                        buttons[i].gameObject.transform.parent.GetComponent<Image>().color = Color.white;
+                    }
                 }
                 else
                 {
@@ -73,5 +93,15 @@ public class ButtonQuest : MonoBehaviour {
     {
         list = newList;
         selected = newSelected;
+        if (list != null)
+        {
+            GetComponent<UnityEngine.UI.Button>().interactable = true;
+            GetComponent<Image>().color = Color.white;
+        }
+        else
+        {
+            GetComponent<UnityEngine.UI.Button>().interactable = false;
+            GetComponent<Image>().color = Color.grey;
+        }
     }
 }

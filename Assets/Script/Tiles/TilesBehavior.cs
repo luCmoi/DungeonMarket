@@ -13,9 +13,14 @@ public class TilesBehavior : MonoBehaviour {
     public GameObject top;
     public GameObject left;
     public bool gameEntrance;
+    public BigTileBehavior container;
     
 	void Start () {
-        if (constructible)
+        if (!container.activated)
+        {
+            GetComponent<SpriteRenderer>().color = Color.gray;
+        }
+        else if (constructible)
         {
             circle = Instantiate(greenCircle, transform.position, Quaternion.identity) as GameObject;
             circle.transform.parent = transform;
@@ -59,38 +64,52 @@ public class TilesBehavior : MonoBehaviour {
     }
     void OnMouseDown()
     {
-        if (UIController.Instance.interactible)
+        if (!GameUtilities.Instance.ButtonInTick)
         {
-            if (GameUtilities.Instance.roadCreating)
-            {
-                if (!GetComponent<RoadBehavior>().activated)
+            if (container.activated)
+            { 
+                if (UIController.Instance.interactible)
                 {
-                    if (constructible)
+                    if (GameUtilities.Instance.roadCreating)
                     {
-                        GetComponent<RoadBehavior>().Activate();
+                        if (!GetComponent<RoadBehavior>().activated)
+                        {
+                            if (constructible)
+                            {
+                                GetComponent<RoadBehavior>().Activate();
+                            }
+                        }
+                        else
+                        {
+                            if (!gameEntrance)
+                            {
+                                GetComponent<RoadBehavior>().Desactivate();
+                            }
+                        }
                     }
-                }
-                else
-                {
-                    if (!gameEntrance)
+                    else if (GameUtilities.Instance.constructing)
                     {
-                        GetComponent<RoadBehavior>().Desactivate();
+                        if (isConstructibleRight(GameUtilities.Instance.building.GetComponent<Building>().width))
+                        {
+                            if (isConstructibleTop(GameUtilities.Instance.building.GetComponent<Building>().height))
+                            {
+                                GetComponent<BuildingBehavior>().Activate();
+                            }
+                        }
+                    }
+                    else if (!constructible && building != null)
+                    {
+                        building.OnMouseDown();
+                    }
+                    else if (gameObject.GetComponentInChildren<PnjBehavior>() != null)
+                    {
+                        UIController.Instance.OpenPnjMenu(gameObject.GetComponentInChildren<PnjBehavior>());
                     }
                 }
             }
-            else if (GameUtilities.Instance.constructing)
+            else
             {
-                if (isConstructibleRight(GameUtilities.Instance.building.GetComponent<Building>().width))
-                {
-                    if (isConstructibleTop(GameUtilities.Instance.building.GetComponent<Building>().height))
-                    {
-                        GetComponent<BuildingBehavior>().Activate();
-                    }
-                }
-            }
-            else if (!constructible && building != null)
-            {
-                building.OnMouseDown();
+                container.OnClick();
             }
         }
     }
@@ -145,6 +164,15 @@ public class TilesBehavior : MonoBehaviour {
                     return false;
                 }
             }
+        }
+    }
+    public void Activate()
+    {
+        GetComponent<SpriteRenderer>().color = Color.white;
+        if (constructible)
+        {
+            circle = Instantiate(greenCircle, transform.position, Quaternion.identity) as GameObject;
+            circle.transform.parent = transform;
         }
     }
 

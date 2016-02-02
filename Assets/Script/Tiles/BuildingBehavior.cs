@@ -19,15 +19,20 @@ public class BuildingBehavior : MonoBehaviour {
 
     public void Activate()
     {
-        GameUtilities.Instance.DesactiveConstructing();
-        GameObject newBuilding = Instantiate(GameUtilities.Instance.building, transform.position,Quaternion.identity) as GameObject;
-        newBuilding.transform.parent = transform;
-        GameObject[][] newTiles = new GameObject[newBuilding.GetComponent<Building>().height][];
-        for (int i = 0; i < newBuilding.GetComponent<Building>().height; i++)
+        if (GameUtilities.Instance.money >= GameUtilities.Instance.building.GetComponent<Building>().price)
         {
-            newTiles[i] = new GameObject[newBuilding.GetComponent<Building>().width];
+            GameUtilities.Instance.DesactiveConstructing();
+            GameObject newBuilding = Instantiate(GameUtilities.Instance.building, transform.position, Quaternion.identity) as GameObject;
+            GameUtilities.Instance.ChangeMoney(-GameUtilities.Instance.building.GetComponent<Building>().price);
+            newBuilding.transform.parent = transform;
+            GameObject[][] newTiles = new GameObject[newBuilding.GetComponent<Building>().height][];
+            for (int i = 0; i < newBuilding.GetComponent<Building>().height; i++)
+            {
+                newTiles[i] = new GameObject[newBuilding.GetComponent<Building>().width];
+            }
+            Recursive(newBuilding, newBuilding.GetComponent<Building>().width, newBuilding.GetComponent<Building>().height, newTiles);
+            newBuilding.SetActive(true);
         }
-        Recursive(newBuilding, newBuilding.GetComponent<Building>().width, newBuilding.GetComponent<Building>().height, newTiles);
     }
     public void Recursive(GameObject newBuilding, int width, int height, GameObject[][] newTiles)
     {

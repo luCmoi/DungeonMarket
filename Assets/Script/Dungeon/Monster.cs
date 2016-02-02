@@ -9,6 +9,10 @@ public class Monster : MonoBehaviour {
     public int power;
     public int price;
     public int respawnTime;
+    public int killed;
+    public string description;
+
+    public bool locked = true;
 	// Use this for initialization
 	void Start () {
 	

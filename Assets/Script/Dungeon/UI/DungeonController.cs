@@ -7,9 +7,10 @@ public class DungeonController : MonoBehaviour {
     public SelectMonsterCOntroller selectMonster;
     public Button[] leavingEdges = new Button[4];
     private Dungeon dungeon;
+    public Text title;
     // Use this for initialization
     void Start () {
-	
+	     
 	}
 	
 	// Update is called once per frame
@@ -20,6 +21,7 @@ public class DungeonController : MonoBehaviour {
     public void SetDungeon(Dungeon dungeonNew)
     {
         dungeon = dungeonNew;
+        title.text = dungeon.GetComponent<Building>().nameBuilding;
         foreach (CaseController case0 in cases)
         {
             case0.SetDungeon(dungeon);
@@ -38,6 +40,7 @@ public class DungeonController : MonoBehaviour {
 
     public void DesactivateMenu()
     {
+        selectMonster.Desactivate();
         selectMonster.gameObject.SetActive(false);
         foreach (Button leav in leavingEdges)
         {
@@ -58,9 +61,10 @@ public class DungeonController : MonoBehaviour {
     public void Selected(int id, Monster monster)
     {
         cases[id].SetMonster(monster);
-        dungeon.monsters[id] = new MonsterInstance(monster, dungeon);
-        dungeon.power = dungeon.power + monster.power;
-        GameList.Instance.Dungeons.Sort();
+        dungeon.NewMonster(id, monster);
         DesactivateMenu();
+        if (id < 9) {
+            cases[id + 1].ActivateButton();
+        }
     }
 }

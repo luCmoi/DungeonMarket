@@ -4,10 +4,12 @@ using System.Collections;
 using System;
     
 public class PnjBehavior : MonoBehaviour, IComparable<PnjBehavior> {
-
+   //Static
     public TilesBehavior container;
-    public QuestLaunched quest;
-
+    public String pnjName;
+    public Class classOf;
+    public TilesBehavior initTile;
+    //Stats
     public int money;
     public int startingMoney;
     public int tick;
@@ -19,22 +21,39 @@ public class PnjBehavior : MonoBehaviour, IComparable<PnjBehavior> {
     public int adventureMax;
     public int shop;
     public int shopMax;
-
+    //Level
+    public int level;
+    public int levelMax;
+    public int[] xpMax;
+    public int xp;
+    //Life, Damage, adventure,shop,startmoney,power
+    public int[] statLevel1 = new int[6];
+    public int[] statLevel2 = new int[6];
+    public int[] statLevel3 = new int[6];
+    public int[] statLevel4 = new int[6];
+    public int[] statLevel5 = new int[6];
+    //Objectif
     public Quest objectif0;
     public Dungeon objectif1;
     public Facility objectif2;
     public Entrance objectif3;
-    public int adv;
-    public int sho;
+    public QuestLaunched quest;
     public List<TilesBehavior> way = new List<TilesBehavior>();
-
-    public TilesBehavior initTile;
-
     public bool inDungeon;
-    public bool active;
     public int outMax;
     public int outTime;
-    // Use this for initialization
+    //Info
+    public bool active;
+    public int adv;
+    public int sho;
+    public int questFinished;
+    public int monsterKilled;
+    //UI
+    public int[] gains = new int[4];
+    public List<GameObject> info = new List<GameObject>();
+    public GameObject pnjPopUp;
+   
+
     void Start () {
         money = startingMoney;
         life = lifeMax;
@@ -88,8 +107,9 @@ public class PnjBehavior : MonoBehaviour, IComparable<PnjBehavior> {
                     else
                     {
                         //RETURNING QUEST
-                        money = money + quest.quest.money;
-                        quest.quest.questGiver.GetComponent<QuestGiver>().Return();
+                        quest.quest.questGiver.GetComponent<QuestGiver>().Return(this);
+                        questFinished++;
+                        classOf.questFinished++;
                         quest = null;
                         objectif0 = null;
                         way.Clear();
@@ -119,6 +139,12 @@ public class PnjBehavior : MonoBehaviour, IComparable<PnjBehavior> {
                             objectif2 = null;
                             way.Clear();
                         }
+                    }
+                    else
+                    {
+                        //NORMAL SHOP
+                        objectif2.Use(this);
+                        way.Clear();
                     }
                 }
                 else if (objectif3 != null)
@@ -182,6 +208,48 @@ public class PnjBehavior : MonoBehaviour, IComparable<PnjBehavior> {
             }
         }
     }
+    void checkGains()
+    {
+        GameObject instance;
+        //Money
+        if (gains[0] != 0)
+        {
+            money = money + gains[0];
+            instance = Instantiate(pnjPopUp, gameObject.transform.position, Quaternion.identity) as GameObject;
+            instance.GetComponent<PnjPopupInfo>().setText(0, gains[0].ToString(), info);
+            info.Add(instance);
+            gains[0] = 0;
+        }
+        //Xp
+        if (gains[1] != 0)
+        {
+            xp = xp + gains[1];
+            if (xp >= xpMax[level])
+            {
+                newLevel();
+            }
+            instance = Instantiate(pnjPopUp, gameObject.transform.position, Quaternion.identity) as GameObject;
+            instance.GetComponent<PnjPopupInfo>().setText(2,gains[1].ToString(), info);
+            info.Add(instance);
+            gains[1] = 0;
+        }
+        //Satisfaction
+        if (gains[2] != 0)
+        {
+            classOf.satisfaction = classOf.satisfaction + gains[2];
+            //instance = Instantiate(pnjPopUp, gameObject.transform.position, Quaternion.identity) as GameObject;
+            //info.Add(instance);
+            gains[2] = 0;
+        }
+        //Search
+        if (gains[3] != 0)
+        {
+            instance = Instantiate(pnjPopUp, gameObject.transform.position, Quaternion.identity) as GameObject;
+            instance.GetComponent<PnjPopupInfo>().setText(1, gains[3].ToString(),info);
+            info.Add(instance);
+            gains[3] = 0;
+        }
+    }
     void FixedUpdate()
     {
         if (active)
@@ -193,6 +261,8 @@ public class PnjBehavior : MonoBehaviour, IComparable<PnjBehavior> {
                     tick = GameUtilities.Instance.tick;
                     if (!inDungeon)
                     {
+                        //CHECK GAINS
+                        checkGains();
                         //IS OUT
                         if (outTime != 0)
                         {
@@ -222,8 +292,8 @@ public class PnjBehavior : MonoBehaviour, IComparable<PnjBehavior> {
                                 }
                                 else
                                 {
-                                     adv = UnityEngine.Random.Range(0, 10) * adventure;
-                                     sho = UnityEngine.Random.Range(0, 10) * shop;
+                                     adv = UnityEngine.Random.Range(0, 100) * adventure;
+                                     sho = UnityEngine.Random.Range(0, 100) * shop;
                                     if (adv >= sho)
                                     {
                                         adventureChoiceBehavior();
@@ -234,6 +304,11 @@ public class PnjBehavior : MonoBehaviour, IComparable<PnjBehavior> {
                                         if (objectif2 != null)
                                         {
                                             CalculateWay(gameObject.transform.parent.GetComponent<TilesBehavior>(), objectif2.GetComponent<Building>().entrance.GetComponent<TilesBehavior>());
+                                        }else if (adventure <= 0)
+                                        {
+                                            //EXIT
+                                            objectif3 = GameUtilities.Instance.entrance;
+                                            CalculateWay(gameObject.transform.parent.GetComponent<TilesBehavior>(), objectif3.GetComponent<TilesBehavior>());
                                         }
                                     }
                                 }
@@ -253,7 +328,87 @@ public class PnjBehavior : MonoBehaviour, IComparable<PnjBehavior> {
             life = lifeMax;
         }
     }
-
+    public void newLevel()
+    {
+        switch (level)
+        {
+            case 0:
+                GameUtilities.Instance.band.Activate(gameObject.GetComponent<SpriteRenderer>().sprite, pnjName + " - Level Up", "Level 1 : "+parseLevel(statLevel1));
+                lifeMax = lifeMax + statLevel1[0];
+                damage = damage + statLevel1[1];
+                adventureMax = adventureMax + statLevel1[2];
+                shopMax = shopMax + statLevel1[3];
+                startingMoney = startingMoney + statLevel1[4];
+                power = power + statLevel1[5];
+                break;
+            case 1:
+                GameUtilities.Instance.band.Activate(gameObject.GetComponent<SpriteRenderer>().sprite, pnjName + " - Level Up", "Level 2 : " + parseLevel(statLevel1));
+                lifeMax = lifeMax + statLevel2[0];
+                damage = damage + statLevel2[1];
+                adventureMax = adventureMax + statLevel2[2];
+                shopMax = shopMax + statLevel2[3];
+                startingMoney = startingMoney + statLevel2[4];
+                power = power + statLevel2[5];
+                break;
+            case 2:
+                GameUtilities.Instance.band.Activate(gameObject.GetComponent<SpriteRenderer>().sprite, pnjName + " - Level Up", "Level 3 : " + parseLevel(statLevel1));
+                lifeMax = lifeMax + statLevel3[0];
+                damage = damage + statLevel3[1];
+                adventureMax = adventureMax + statLevel3[2];
+                shopMax = shopMax + statLevel3[3];
+                startingMoney = startingMoney + statLevel3[4];
+                power = power + statLevel3[5];
+                break;
+            case 3:
+                GameUtilities.Instance.band.Activate(gameObject.GetComponent<SpriteRenderer>().sprite, pnjName + " - Level Up", "Level 4 : " + parseLevel(statLevel1));
+                lifeMax = lifeMax + statLevel4[0];
+                damage = damage + statLevel4[1];
+                adventureMax = adventureMax + statLevel4[2];
+                shopMax = shopMax + statLevel4[3];
+                startingMoney = startingMoney + statLevel4[4];
+                power = power + statLevel4[5];
+                break;
+            case 4:
+                GameUtilities.Instance.band.Activate(gameObject.GetComponent<SpriteRenderer>().sprite, pnjName + " - Level Up", "Level 5 : " + parseLevel(statLevel1));
+                lifeMax = lifeMax + statLevel5[0];
+                damage = damage + statLevel5[1];
+                adventureMax = adventureMax + statLevel5[2];
+                shopMax = shopMax + statLevel5[3];
+                startingMoney = startingMoney + statLevel5[4];
+                power = power + statLevel5[5];
+                break;
+        }
+        xp = xp - xpMax[level];
+        level++;
+        life = lifeMax;
+        adventure = adventureMax;
+        shop = shopMax;
+    }
+    public String parseLevel(int[] stat)
+    {
+        String retour = "";
+        if (stat[0]!= 0)
+        {
+            retour = retour + "+"+stat[0] + " Life,";
+        }
+        if (stat[1] != 0)
+        {
+            retour = retour + "+" + stat[1] + " Damage,";
+        }
+        if (stat[2] != 0)
+        {
+            retour = retour + "+" + stat[2] + " Adventure,";
+        }
+        if (stat[3] != 0)
+        {
+            retour = retour + "+" + stat[3] + " Shop,";
+        }
+        if (stat[4] != 0)
+        {
+            retour = retour + "+" + stat[4] + " Starting Money,";
+        }
+        return retour.Remove(retour.Length-1);
+    }
 
 
     public class Node

@@ -16,13 +16,17 @@ public class ButtonRoadCreat : MonoBehaviour {
 
     public void OnClick()
     {
-        if (GameUtilities.Instance.roadCreating)
+        if (!GameUtilities.Instance.ButtonInTick)
         {
-            GameUtilities.Instance.roadCreating = false;
-        }
-        else
-        {
-            GameUtilities.Instance.ActiveRoadCreating();
+            GameUtilities.Instance.ButtonInTick = true;
+            if (GameUtilities.Instance.roadCreating)
+            {
+                GameUtilities.Instance.roadCreating = false;
+            }
+            else
+            {
+                GameUtilities.Instance.ActiveRoadCreating();
+            }
         }
     }
 }

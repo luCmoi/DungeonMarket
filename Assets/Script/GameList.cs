@@ -57,7 +57,10 @@ public class GameList : MonoBehaviour {
                 {
                     if (quest.power >= powerMin && quest.power <= powerMax)
                     {
-                        tmp.Add(quest);
+                        if (quest.questGiver.GetComponent<Building>().activated)
+                        {
+                            tmp.Add(quest);
+                        }
                     }
                     if (quest.power > powerMax)
                     {
@@ -66,8 +69,12 @@ public class GameList : MonoBehaviour {
                 }
                 powerMin--;
                 powerMax++;
+                if (powerMin == -1)
+                {
+                    return null;
+                }
             }
-            return tmp[Random.Range(0, tmp.Count)];
+            return tmp[UnityEngine.Random.Range(0, tmp.Count)];
         }
         else
         {
@@ -83,7 +90,10 @@ public class GameList : MonoBehaviour {
             {
                 if (monster.monster == quest.creature)
                 {
-                    tmp.Add(monster.dungeon);
+                    if (monster.dungeon.GetComponent<Building>().activated)
+                    {
+                        tmp.Add(monster.dungeon);
+                    }
                 }else if (monster.monster.power > quest.creature.power)
                 {
                     break;
@@ -108,20 +118,20 @@ public class GameList : MonoBehaviour {
         if (RestoreLifes.Count > 0)
         {
             List<Facility> tmp = new List<Facility>();
-            while (tmp.Count <= 0)
-            {
                 foreach (RestoreLife facility in RestoreLifes)
                 {
                     if (facility.GetComponent<Facility>().price <= money)
                     {
-                        tmp.Add(facility.GetComponent<Facility>());
+                        if (facility.GetComponent<Building>().activated)
+                        {
+                            tmp.Add(facility.GetComponent<Facility>());
+                        }
                     }
                     else
                     {
                         break;
                     }
                 }
-            }
             if (tmp.Count > 0)
             {
                 return tmp[Random.Range(0, tmp.Count)];
@@ -141,19 +151,19 @@ public class GameList : MonoBehaviour {
         if (Facilities.Count > 0)
         {
             List<Facility> tmp = new List<Facility>();
-            while (tmp.Count <= 0)
-            {
                 foreach (Facility facility in Facilities)
                 {
                     if (facility.price <= money)
                     {
-                        tmp.Add(facility);
+                        if (facility.GetComponent<Building>().activated)
+                        {
+                            tmp.Add(facility);
+                        }
                     }
                     else
                     {
                         break;
                     }
-                }
             }
             if (tmp.Count > 0)
             {

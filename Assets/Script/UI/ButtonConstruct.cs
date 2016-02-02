@@ -7,15 +7,40 @@ public class ButtonConstruct : MonoBehaviour {
     public GameObject building;
     public Text nameConstruct;
     public Text price;
-    private float sizeName = 0.02f;
-    private float sizePrice = 0.02f;
-
+    public Image image;
+    public GameObject grey;
+    public bool active;
 	// Use this for initialization
 	void Start () {
-        nameConstruct.fontSize = CalculFont(sizeName);
-        price.fontSize = CalculFont(sizePrice);
-	}
+        nameConstruct.text = building.GetComponent<Building>().nameBuilding;
+        price.text = building.GetComponent<Building>().price.ToString();
+        image.sprite = building.GetComponent<Building>().image;
+        if (building.GetComponent<Building>().locked)
+        {
+            GetComponent<Button>().interactable = false;
+            grey.SetActive(true);
+            active = false;
+        }
+        else
+        {
+            GetComponent<Button>().interactable = true;
+            grey.SetActive(false);
+            active = true;
+        }
+    }
 	
+    void FixedUpdate()
+    {
+        if (!active)
+        {
+            if (!building.GetComponent<Building>().locked)
+            {
+                GetComponent<Button>().interactable = true;
+                grey.SetActive(false);
+                active = true;
+            }
+        }
+    }
 	// Update is called once per frame
 	void Update () {
 	
@@ -27,10 +52,5 @@ public class ButtonConstruct : MonoBehaviour {
                 GameUtilities.Instance.building = building;
                 UIController.Instance.DesactivateMenu(0);
         }
-
-    int CalculFont(float fontSize)
-    {
-        return (int)(Screen.width * fontSize);
-    }
 
 }
