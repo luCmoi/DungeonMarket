@@ -41,7 +41,7 @@ public class QuestGiver : MonoBehaviour {
     }
     public void AddQuest(Quest quest ,int row)
     {
-        questSelected[row] = Instantiate(quest);
+        questSelected[row] = quest;
         questSelected[row].questGiver = gameObject;
         GameList.Instance.AddQuest(questSelected[row]);
         if (row >= unlocked)

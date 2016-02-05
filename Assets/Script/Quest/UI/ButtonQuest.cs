@@ -13,7 +13,7 @@ public class ButtonQuest : MonoBehaviour {
     public Text[] buttons = new Text[3];
     public Text[] titleQuest = new Text[3];
     public Quest[] list;
-    public Text[] info = new Text[3];
+    public Text[] info = new Text[6];
     public Quest selected;
 
     // Use this for initialization
@@ -34,10 +34,11 @@ public class ButtonQuest : MonoBehaviour {
             text[1].text = selected.text;
             image[1].sprite = selected.image;
             titleQuest[1].text = selected.nameQuest;
-            info[1].text = "Objectif : "+selected.number + "\nMoney : " + selected.money + "\nDifficulty : " + selected.power + "\nExecuted : "+selected.executed;
+            info[2].text = "Objectif : " + selected.number + "\nMoney : " + selected.money;
+            info[3].text = "Difficulty : " + selected.power + "\nExecuted : "+selected.executed;
             if (selected.mastered)
             {
-                info[1].text += "Mastered";
+                titleQuest[1].text += " - Mastered";
             }
             if (!selected.mastered)
             {
@@ -60,10 +61,11 @@ public class ButtonQuest : MonoBehaviour {
                     buttons[i].text = "Select";
                     buttons[i].transform.parent.GetComponent<ButtonSelect>().questRow = id;
                     titleQuest[i].text = list[i].nameQuest;
-                    info[i].text = "Objectif : " + list[i].number + "\nMoney : " + list[i].money + "\nDifficulty : " + list[i].power+ "\nExecuted : " + list[i].executed;
+                    info[i * 2].text = "Objectif : " + list[i].number + "\nMoney : " + list[i].money;
+                    info[i * 2+1].text = "Difficulty : " + list[i].power+ "\nExecuted : " + list[i].executed;
                     if (list[i].mastered)
                     {
-                        info[1].text += "\nMastered";
+                        titleQuest[1].text += " - Mastered";
                     }
                     if (list[i].locked)
                     {

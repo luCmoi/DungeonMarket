@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 
-public class TilesBehavior : MonoBehaviour {
+public class TilesBehavior : MonoBehaviour, IPointerClickHandler {
     public GameObject greenCircle;
     private GameObject circle;
     public bool constructible;
@@ -15,6 +16,57 @@ public class TilesBehavior : MonoBehaviour {
     public bool gameEntrance;
     public BigTileBehavior container;
     
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (!GameUtilities.Instance.ButtonInTick)
+        {
+            if (UIController.Instance.interactible)
+            {
+                if (container.activated)
+                {
+                    if (GameUtilities.Instance.roadCreating)
+                    {
+                        if (!GetComponent<RoadBehavior>().activated)
+                        {
+                            if (constructible)
+                            {
+                                GetComponent<RoadBehavior>().Activate();
+                            }
+                        }
+                        else
+                        {
+                            if (!gameEntrance)
+                            {
+                                GetComponent<RoadBehavior>().Desactivate();
+                            }
+                        }
+                    }
+                    else if (GameUtilities.Instance.constructing)
+                    {
+                        if (isConstructibleRight(GameUtilities.Instance.building.GetComponent<Building>().width))
+                        {
+                            if (isConstructibleTop(GameUtilities.Instance.building.GetComponent<Building>().height))
+                            {
+                                GetComponent<BuildingBehavior>().Activate();
+                            }
+                        }
+                    }
+                    else if (!constructible && building != null)
+                    {
+                        building.OnMouseDown();
+                    }
+                    else if (gameObject.GetComponentInChildren<PnjBehavior>() != null)
+                    {
+                        UIController.Instance.OpenPnjMenu(gameObject.GetComponentInChildren<PnjBehavior>());
+                    }
+                }
+                else
+                {
+                    container.OnClick();
+                }
+            }
+        }
+    }
 	void Start () {
         if (!container.activated)
         {
@@ -59,57 +111,6 @@ public class TilesBehavior : MonoBehaviour {
             {
                circle = Instantiate(greenCircle, transform.position, Quaternion.identity) as GameObject;
                 circle.transform.parent = transform;
-            }
-        }
-    }
-    void OnMouseDown()
-    {
-        if (!GameUtilities.Instance.ButtonInTick)
-        {
-            if (container.activated)
-            { 
-                if (UIController.Instance.interactible)
-                {
-                    if (GameUtilities.Instance.roadCreating)
-                    {
-                        if (!GetComponent<RoadBehavior>().activated)
-                        {
-                            if (constructible)
-                            {
-                                GetComponent<RoadBehavior>().Activate();
-                            }
-                        }
-                        else
-                        {
-                            if (!gameEntrance)
-                            {
-                                GetComponent<RoadBehavior>().Desactivate();
-                            }
-                        }
-                    }
-                    else if (GameUtilities.Instance.constructing)
-                    {
-                        if (isConstructibleRight(GameUtilities.Instance.building.GetComponent<Building>().width))
-                        {
-                            if (isConstructibleTop(GameUtilities.Instance.building.GetComponent<Building>().height))
-                            {
-                                GetComponent<BuildingBehavior>().Activate();
-                            }
-                        }
-                    }
-                    else if (!constructible && building != null)
-                    {
-                        building.OnMouseDown();
-                    }
-                    else if (gameObject.GetComponentInChildren<PnjBehavior>() != null)
-                    {
-                        UIController.Instance.OpenPnjMenu(gameObject.GetComponentInChildren<PnjBehavior>());
-                    }
-                }
-            }
-            else
-            {
-                container.OnClick();
             }
         }
     }
